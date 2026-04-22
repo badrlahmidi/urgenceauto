@@ -9,5 +9,16 @@
   },
   "Category": {
     "back": "Retour à l'accueil"
+  },
+  "ProCard": {
+    "reviews": "avis",
+    "call": "Appeler",
+    "viewProfile": "Voir le profil"
+  },
+  "ProProfile": {
+    "reviews": "avis",
+    "call": "Appeler",
+    "reviewsTitle": "Avis Clients",
+    "noReviews": "Aucun avis pour le moment."
   }
 }

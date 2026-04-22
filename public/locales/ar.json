@@ -9,5 +9,16 @@
   },
   "Category": {
     "back": "العودة إلى الصفحة الرئيسية"
+  },
+  "ProCard": {
+    "reviews": "تقييمات",
+    "call": "اتصال",
+    "viewProfile": "عرض الملف"
+  },
+  "ProProfile": {
+    "reviews": "تقييمات",
+    "call": "اتصال",
+    "reviewsTitle": "آراء العملاء",
+    "noReviews": "لا توجد تقييمات حتى الآن."
   }
 }
