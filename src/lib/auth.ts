@@ -49,7 +49,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }
         }
 
-        return { id: user.id, phone: user.phone, role: user.role };
+        return { id: user.id, phone: user.phone as string, role: user.role };
       },
     }),
   ],
