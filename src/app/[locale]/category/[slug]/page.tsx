@@ -2,7 +2,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 export default async function CategoryPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
-  const t = await useTranslations("Category");
+  const t = useTranslations("Category");
   const { locale, slug } = await params;
 
   return (
