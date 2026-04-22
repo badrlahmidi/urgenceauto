@@ -25,6 +25,11 @@ export default async function ProfileManagement({ params }: { params: Promise<{ 
   // Server action to update profile
   async function updateProfile(formData: FormData) {
     "use server";
+    const sessionAction = await auth();
+    if (!sessionAction || sessionAction.user.role !== "PRO") {
+      throw new Error("Unauthorized");
+    }
+
     const nameFr = formData.get("nameFr") as string;
     const nameAr = formData.get("nameAr") as string;
 
