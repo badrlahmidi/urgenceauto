@@ -1,0 +1,13 @@
+{
+  "Index": {
+    "title": "Urgence Auto Marrakech",
+    "searchPlaceholder": "Que recherchez-vous ? (ex: Mécanicien, Remorquage...)",
+    "searchButton": "Rechercher",
+    "mechanic": "Mécanicien",
+    "electrician": "Électricien",
+    "towing": "Remorquage"
+  },
+  "Category": {
+    "back": "Retour à l'accueil"
+  }
+}

@@ -1,0 +1,67 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  VISITOR
+  PRO
+  ADMIN
+}
+
+enum ProfessionalStatus {
+  PENDING
+  APPROVED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String?  @unique
+  phone        String?  @unique
+  passwordHash String?
+  role         Role     @default(VISITOR)
+  isVerified   Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Professional {
+  id          String             @id @default(cuid())
+  nameAr      String
+  nameFr      String
+  slug        String             @unique
+  categoryId  String
+  category    Category           @relation(fields: [categoryId], references: [id])
+  whatsapp    String
+  lat         Float?
+  long        Float?
+  status      ProfessionalStatus @default(PENDING)
+  reviews     Review[]
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+}
+
+model Category {
+  id            String         @id @default(cuid())
+  slug          String         @unique
+  nameAr        String
+  nameFr        String
+  icon          String?
+  professionals Professional[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model Review {
+  id        String       @id @default(cuid())
+  rating    Int
+  comment   String?
+  proId     String
+  pro       Professional @relation(fields: [proId], references: [id])
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
