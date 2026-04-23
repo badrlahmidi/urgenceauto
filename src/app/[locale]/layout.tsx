@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { getMessages } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -8,10 +8,26 @@ const inter = Inter({ subsets: ["latin"] });
 // import { Tajawal } from "next/font/google";
 // const tajawal = Tajawal({ subsets: ["arabic"], weight: ["400", "500", "700"] });
 
-export const metadata: Metadata = {
-  title: "Urgence Auto",
-  description: "Plateforme de maintenance automobile à Marrakech",
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'Metadata' });
+
+  return {
+    title: {
+      template: '%s | Urgence Auto',
+      default: t('title'),
+    },
+    description: t('description'),
+    openGraph: {
+      title: t('title'),
+      description: t('description'),
+      url: 'https://urgenceauto.ma',
+      siteName: 'Urgence Auto',
+      locale: locale === 'ar' ? 'ar_MA' : 'fr_FR',
+      type: 'website',
+    },
+  };
+}
 
 export default async function RootLayout({
   children,
