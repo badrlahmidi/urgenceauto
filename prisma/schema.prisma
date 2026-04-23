@@ -96,6 +96,17 @@ model Category {
   updatedAt     DateTime       @updatedAt
 }
 
+model SiteSettings {
+  id            String   @id @default("global")
+  heroTitleFr   String   @default("Urgence Auto Marrakech")
+  heroTitleAr   String   @default("طوارئ السيارات مراكش")
+  heroSubFr     String   @default("Trouvez instantanément les meilleurs professionnels de l'automobile autour de vous.")
+  heroSubAr     String   @default("ابحث على الفور عن أفضل المتخصصين في السيارات من حولك.")
+  contactEmail  String?
+  contactPhone  String?
+  updatedAt     DateTime @updatedAt
+}
+
 model Review {
   id        String       @id @default(cuid())
   rating    Int
