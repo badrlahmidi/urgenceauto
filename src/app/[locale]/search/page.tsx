@@ -1,7 +1,6 @@
 import { db } from "@/lib/db";
 import { ProfessionalCard } from "@/components/ProfessionalCard";
 import { SearchBar } from "@/components/SearchBar";
-import { useTranslations } from "next-intl";
 
 export default async function SearchResultsPage({
   params,

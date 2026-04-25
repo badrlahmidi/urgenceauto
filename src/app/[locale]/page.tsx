@@ -1,4 +1,3 @@
-import { useTranslations } from "next-intl";
 import { SearchBar } from "@/components/SearchBar";
 import { CategoryGrid } from "@/components/CategoryGrid";
 import { db } from "@/lib/db";
