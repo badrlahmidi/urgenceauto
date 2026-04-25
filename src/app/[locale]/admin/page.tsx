@@ -1,45 +1,10 @@
 import { db } from "@/lib/db";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { revalidatePath } from "next/cache";
-import { auth } from "@/lib/auth";
+import { ApproveProForm, RejectProForm } from "./ModerationForms";
 
 export default async function ModerationPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-
-  async function approvePro(formData: FormData) {
-    "use server";
-    const session = await auth();
-    if (!session || session.user.role !== "ADMIN") {
-      throw new Error("Unauthorized");
-    }
-
-    const proId = formData.get("proId") as string;
-    if (proId) {
-      await db.professional.update({
-        where: { id: proId },
-        data: { status: "APPROVED" }
-      });
-      revalidatePath(`/${locale}/admin`);
-    }
-  }
-
-  async function rejectPro(formData: FormData) {
-    "use server";
-    const session = await auth();
-    if (!session || session.user.role !== "ADMIN") {
-      throw new Error("Unauthorized");
-    }
-
-    const proId = formData.get("proId") as string;
-    if (proId) {
-      await db.professional.delete({
-        where: { id: proId }
-      });
-      revalidatePath(`/${locale}/admin`);
-    }
-  }
 
   const professionals = await db.professional.findMany({
     include: {
@@ -91,17 +56,9 @@ export default async function ModerationPage({ params }: { params: Promise<{ loc
                       <td className="px-6 py-4 text-right space-x-2">
                         <div className="flex items-center justify-end gap-2">
                           {pro.status === 'PENDING' && (
-                            <form action={approvePro}>
-                              <input type="hidden" name="proId" value={pro.id} />
-                              <Button type="submit" size="sm" variant="success">Approuver</Button>
-                            </form>
+                            <ApproveProForm proId={pro.id} locale={locale} />
                           )}
-                          <form action={rejectPro}>
-                            <input type="hidden" name="proId" value={pro.id} />
-                            <Button type="submit" size="sm" variant="destructive">
-                              {pro.status === 'PENDING' ? 'Rejeter' : 'Supprimer'}
-                            </Button>
-                          </form>
+                          <RejectProForm pro={pro} locale={locale} />
                         </div>
                       </td>
                     </tr>

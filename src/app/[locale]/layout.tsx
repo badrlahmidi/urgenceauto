@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { getMessages, getTranslations } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
+import { Toaster } from "sonner";
+import "@/app/globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 // Assuming an Arabic font would be imported here, e.g., Noto Sans Arabic or Tajawal
@@ -48,6 +50,7 @@ export default async function RootLayout({
       <body className={fontClass}>
         <NextIntlClientProvider messages={messages}>
           {children}
+          <Toaster position="top-center" richColors />
         </NextIntlClientProvider>
       </body>
     </html>

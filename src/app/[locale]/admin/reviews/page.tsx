@@ -1,28 +1,10 @@
 import { db } from "@/lib/db";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
-import { revalidatePath } from "next/cache";
-import { auth } from "@/lib/auth";
+import { DeleteReviewForm } from "./DeleteReviewForm";
 
 export default async function ReviewsModerationPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-
-  async function deleteReview(formData: FormData) {
-    "use server";
-    const session = await auth();
-    if (!session || session.user.role !== "ADMIN") {
-      throw new Error("Unauthorized");
-    }
-
-    const reviewId = formData.get("reviewId") as string;
-    if (reviewId) {
-      await db.review.delete({
-        where: { id: reviewId }
-      });
-      revalidatePath(`/${locale}/admin/reviews`);
-    }
-  }
 
   const reviews = await db.review.findMany({
     include: {
@@ -80,10 +62,7 @@ export default async function ReviewsModerationPage({ params }: { params: Promis
                       </td>
                       <td className="px-6 py-4 text-right space-x-2">
                         <div className="flex items-center justify-end">
-                          <form action={deleteReview}>
-                            <input type="hidden" name="reviewId" value={review.id} />
-                            <Button type="submit" size="sm" variant="destructive">Supprimer</Button>
-                          </form>
+                          <DeleteReviewForm reviewId={review.id} locale={locale} />
                         </div>
                       </td>
                     </tr>

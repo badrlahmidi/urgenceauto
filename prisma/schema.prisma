@@ -79,6 +79,7 @@ model Professional {
   whatsapp    String
   lat         Float?
   long        Float?
+  images      String[]           @default([])
   status      ProfessionalStatus @default(PENDING)
   reviews     Review[]
   createdAt   DateTime           @default(now())

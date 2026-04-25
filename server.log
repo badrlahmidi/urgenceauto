@@ -55,3 +55,8 @@
  GET /ar/category/mecanique-generale 404 in 2ms
    Reload env: .env
  ✓ Compiled in 577ms (701 modules)
+ ✓ Compiled in 6.2s (701 modules)
+ ✓ Compiled in 608ms (701 modules)
+   Reload env: .env
+ ✓ Compiled in 486ms (701 modules)
+ ✓ Compiled in 231ms (701 modules)

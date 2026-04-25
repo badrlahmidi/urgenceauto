@@ -1,77 +1,11 @@
 import { db } from "@/lib/db";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { revalidatePath } from "next/cache";
-import { auth } from "@/lib/auth";
+import { CreateCategoryForm } from "./CreateCategoryForm";
+import { UpdateCategoryForm, DeleteCategoryForm } from "./CategoryActionsForms";
 
 export default async function CategoriesModerationPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
 
-  async function createCategory(formData: FormData) {
-    "use server";
-    const session = await auth();
-    if (!session || session.user.role !== "ADMIN") {
-      throw new Error("Unauthorized");
-    }
-
-    const slug = formData.get("slug") as string;
-    const nameFr = formData.get("nameFr") as string;
-    const nameAr = formData.get("nameAr") as string;
-    const icon = formData.get("icon") as string;
-
-    if (slug && nameFr && nameAr) {
-      try {
-        await db.category.create({
-          data: { slug, nameFr, nameAr, icon }
-        });
-        revalidatePath(`/${locale}/admin/categories`);
-      } catch (error: any) {
-        if (error?.code === 'P2002') {
-          // Unique constraint violation
-          throw new Error(`Category with slug "${slug}" already exists.`);
-        }
-        throw error;
-      }
-    }
-  }
-
-  async function updateCategory(formData: FormData) {
-    "use server";
-    const session = await auth();
-    if (!session || session.user.role !== "ADMIN") {
-      throw new Error("Unauthorized");
-    }
-
-    const categoryId = formData.get("categoryId") as string;
-    const nameFr = formData.get("nameFr") as string;
-    const nameAr = formData.get("nameAr") as string;
-    const icon = formData.get("icon") as string;
-
-    if (categoryId && nameFr && nameAr) {
-      await db.category.update({
-        where: { id: categoryId },
-        data: { nameFr, nameAr, icon }
-      });
-      revalidatePath(`/${locale}/admin/categories`);
-    }
-  }
-
-  async function deleteCategory(formData: FormData) {
-    "use server";
-    const session = await auth();
-    if (!session || session.user.role !== "ADMIN") {
-      throw new Error("Unauthorized");
-    }
-
-    const categoryId = formData.get("categoryId") as string;
-    if (categoryId) {
-      await db.category.delete({
-        where: { id: categoryId }
-      });
-      revalidatePath(`/${locale}/admin/categories`);
-    }
-  }
 
   const categories = await db.category.findMany({
     include: {
@@ -99,25 +33,7 @@ export default async function CategoriesModerationPage({ params }: { params: Pro
             <CardTitle>Nouvelle Catégorie</CardTitle>
           </CardHeader>
           <CardContent>
-            <form action={createCategory} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Identifiant (Slug)</label>
-                <Input name="slug" placeholder="ex: vitrage-auto" required />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nom (Français)</label>
-                <Input name="nameFr" placeholder="ex: Vitrage Auto" required />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nom (Arabe)</label>
-                <Input name="nameAr" placeholder="ex: زجاج السيارات" required dir="rtl" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Icône (Lucide React)</label>
-                <Input name="icon" placeholder="ex: Car" />
-              </div>
-              <Button type="submit" className="w-full">Ajouter</Button>
-            </form>
+            <CreateCategoryForm locale={locale} />
           </CardContent>
         </Card>
 
@@ -147,25 +63,14 @@ export default async function CategoriesModerationPage({ params }: { params: Pro
                           <span className="text-xs text-gray-500">{cat.icon || 'Aucune icône'}</span>
                         </td>
                         <td className="px-6 py-4">
-                          <form action={updateCategory} className="flex flex-col gap-2">
-                            <input type="hidden" name="categoryId" value={cat.id} />
-                            <Input name="nameFr" defaultValue={cat.nameFr} required className="h-8 text-xs" />
-                            <Input name="nameAr" defaultValue={cat.nameAr} required dir="rtl" className="h-8 text-xs" />
-                            <Input name="icon" defaultValue={cat.icon || ""} className="h-8 text-xs" placeholder="Icône" />
-                            <Button type="submit" size="sm" variant="secondary" className="w-full text-xs">Mettre à jour</Button>
-                          </form>
+                          <UpdateCategoryForm cat={cat} locale={locale} />
                         </td>
                         <td className="px-6 py-4 text-center font-bold text-blue-600">
                           {cat._count.professionals}
                         </td>
                         <td className="px-6 py-4 text-right align-top">
                           <div className="flex items-center justify-end">
-                            <form action={deleteCategory}>
-                              <input type="hidden" name="categoryId" value={cat.id} />
-                              <Button type="submit" size="sm" variant="destructive" disabled={cat._count.professionals > 0}>
-                                Supprimer
-                              </Button>
-                            </form>
+                            <DeleteCategoryForm cat={cat} locale={locale} />
                           </div>
                         </td>
                       </tr>

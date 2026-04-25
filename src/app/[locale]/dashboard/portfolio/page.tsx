@@ -2,8 +2,8 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { UploadCloud, ImageIcon } from "lucide-react";
+import { ImageIcon } from "lucide-react";
+import { UploadForm } from "./UploadForm";
 
 export default async function PortfolioManagement({ params }: { params: Promise<{ locale: string }> }) {
   const session = await auth();
@@ -33,25 +33,25 @@ export default async function PortfolioManagement({ params }: { params: Promise<
           <CardTitle>Ajouter une nouvelle image</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="border-2 border-dashed border-gray-300 rounded-xl p-10 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition-colors cursor-pointer">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-              <UploadCloud className="w-8 h-8 text-blue-600" />
-            </div>
-            <h3 className="font-semibold text-lg text-gray-900 mb-1">Cliquez pour uploader</h3>
-            <p className="text-gray-500 text-sm mb-6">PNG, JPG, WEBP jusqu'à 5MB</p>
-            <Button>Sélectionner un fichier</Button>
-          </div>
+          <UploadForm locale={locale} />
         </CardContent>
       </Card>
 
       <div>
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Vos images (0)</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-4">Vos images ({pro.images.length})</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {/* Empty state placeholder */}
-          <div className="aspect-square bg-gray-100 rounded-xl flex flex-col items-center justify-center text-gray-400 border border-gray-200">
-            <ImageIcon className="w-12 h-12 mb-2" />
-            <span className="text-sm">Aucune image</span>
-          </div>
+          {pro.images.length > 0 ? (
+            pro.images.map((imgUrl, index) => (
+              <div key={index} className="aspect-square rounded-xl overflow-hidden border border-gray-200">
+                <img src={imgUrl} alt={`Portfolio ${index + 1}`} className="w-full h-full object-cover" />
+              </div>
+            ))
+          ) : (
+            <div className="aspect-square bg-gray-100 rounded-xl flex flex-col items-center justify-center text-gray-400 border border-gray-200">
+              <ImageIcon className="w-12 h-12 mb-2" />
+              <span className="text-sm">Aucune image</span>
+            </div>
+          )}
         </div>
       </div>
     </div>
